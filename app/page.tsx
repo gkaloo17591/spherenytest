@@ -209,7 +209,7 @@ export default function SphereNY() {
             </div>
             <h1 className="font-black leading-[1.05] tracking-tight mb-6 mx-auto"
                 style={{ fontSize: "clamp(2.8rem, 7vw, 6rem)", maxWidth: "900px" }}>
-              We Can Teach You How To{" "}
+               {" "}
               <span style={{ background: `linear-gradient(135deg, ${CYAN}, ${BLUE})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Increase Revenues.
             </span>{" "}

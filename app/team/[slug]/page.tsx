@@ -1,37 +1,29 @@
 "use client";
 
 import { notFound } from "next/navigation";
+import { use } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const CYAN = "#00c3e3";
 const BLUE = "#1a7abf";
 const BLUE_DARK = "#0f5fa0";
 
-// ── EDIT ALL PROFILES HERE ──
 const PROFILES: Record<string, {
     name: string;
     title: string;
     department: string;
     photo: string | null;
     bio: string;
-    education?: { institution: string; degree: string }[];
-    affiliations?: string[];
-    expertise?: string[];
+    education: { institution: string; degree: string }[];
 }> = {
     john: {
         name: "John",
         title: "President",
         department: "Leadership",
-        photo: null, // e.g. "/photos/john.jpg"
+        photo: null,
         bio: "Add John's biography here. Describe his background, experience, and leadership role at SphereNY.",
-        education: [
-            { institution: "Add University", degree: "Add Degree" },
-        ],
-        affiliations: [
-            "Add affiliation here",
-            "Add affiliation here",
-        ],
-        expertise: ["Leadership", "Strategy", "Business Development"],
+        education: [{ institution: "Add University", degree: "Add Degree" }],
     },
     sean: {
         name: "Sean",
@@ -39,11 +31,7 @@ const PROFILES: Record<string, {
         department: "Leadership",
         photo: null,
         bio: "Add Sean's biography here. Describe his technical background and leadership of the IT division at SphereNY.",
-        education: [
-            { institution: "Add University", degree: "Add Degree" },
-        ],
-        affiliations: [],
-        expertise: ["IT Strategy", "Cybersecurity", "Infrastructure", "App Development"],
+        education: [{ institution: "Add University", degree: "Add Degree" }],
     },
     donna: {
         name: "Donna",
@@ -52,8 +40,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Donna's biography here. Describe her financial background and role managing operations at SphereNY.",
         education: [],
-        affiliations: [],
-        expertise: ["Financial Management", "Operations", "Compliance"],
     },
     rama: {
         name: "Rama",
@@ -62,8 +48,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Rama's biography here. Describe her experience leading application development and support teams.",
         education: [],
-        affiliations: [],
-        expertise: ["App Development", "Team Leadership", "Technical Support"],
     },
     linda: {
         name: "Linda",
@@ -72,8 +56,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Linda's biography here.",
         education: [],
-        affiliations: [],
-        expertise: ["Application Support", "Development", "Troubleshooting"],
     },
     june: {
         name: "June",
@@ -82,8 +64,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add June's biography here.",
         education: [],
-        affiliations: [],
-        expertise: ["Help Desk", "Technical Support", "User Support"],
     },
     kate: {
         name: "Kate",
@@ -92,8 +72,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Kate's biography here.",
         education: [],
-        affiliations: [],
-        expertise: ["Help Desk", "Technical Support", "Customer Service"],
     },
     gabriel: {
         name: "Gabriel",
@@ -102,8 +80,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Gabriel's biography here.",
         education: [],
-        affiliations: [],
-        expertise: ["Help Desk", "IT Support", "Cybersecurity"],
     },
     danny: {
         name: "Danny",
@@ -112,8 +88,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Danny's biography here. Describe his experience leading infrastructure and cybersecurity initiatives.",
         education: [],
-        affiliations: [],
-        expertise: ["Infrastructure", "Cybersecurity", "Network Security", "Systems Architecture"],
     },
     johnny: {
         name: "Johnny",
@@ -122,8 +96,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Johnny's biography here.",
         education: [],
-        affiliations: [],
-        expertise: ["System Administration", "Network Management", "Server Infrastructure"],
     },
     shane: {
         name: "Shane",
@@ -132,8 +104,6 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Shane's biography here. Describe his background in risk management and claims advocacy.",
         education: [],
-        affiliations: [],
-        expertise: ["Risk Management", "Claims Advocacy", "Insurance", "Construction Risk"],
     },
     marissa: {
         name: "Marissa",
@@ -142,13 +112,12 @@ const PROFILES: Record<string, {
         photo: null,
         bio: "Add Marissa's biography here.",
         education: [],
-        affiliations: [],
-        expertise: ["Claims Processing", "Risk Analysis", "Insurance"],
     },
 };
 
-export default function ProfilePage({ params }: { params: { slug: string } }) {
-    const profile = PROFILES[params.slug];
+export default function ProfilePage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = use(params);
+    const profile = PROFILES[slug];
     if (!profile) notFound();
 
     return (
@@ -190,25 +159,27 @@ export default function ProfilePage({ params }: { params: { slug: string } }) {
             <section className="relative z-10 pt-36 pb-28 px-8 md:px-16 max-w-5xl mx-auto">
 
                 {/* Back link */}
-                <motion.a href="/team" initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
-                          className="inline-flex items-center gap-2 mb-10 text-xs font-bold tracking-widest uppercase transition-colors"
-                          style={{ color: CYAN, textDecoration: "none" }}
-                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = "0.7"}
-                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = "1"}
-                >
-                    ← Back to Our People
-                </motion.a>
+                <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
+                    <Link href="/team"
+                          className="inline-flex items-center gap-2 mb-10 text-xs font-bold tracking-widest uppercase transition-opacity hover:opacity-70"
+                          style={{ color: CYAN, textDecoration: "none" }}>
+                        ← Back to Our People
+                    </Link>
+                </motion.div>
 
                 {/* Name + title */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                    <div className="text-xs font-semibold tracking-[0.2em] uppercase mb-3" style={{ color: CYAN }}>{profile.department}</div>
-                    <h1 className="font-black uppercase mb-2" style={{ fontSize: "clamp(2.5rem,7vw,5.5rem)", letterSpacing: "-0.03em", lineHeight: 1 }}>
+                    <div className="text-xs font-semibold tracking-[0.2em] uppercase mb-3" style={{ color: CYAN }}>
+                        {profile.department}
+                    </div>
+                    <h1 className="font-black uppercase mb-2"
+                        style={{ fontSize: "clamp(2.5rem,7vw,5.5rem)", letterSpacing: "-0.03em", lineHeight: 1 }}>
                         {profile.name}
                     </h1>
                     <p className="text-lg mb-12" style={{ color: "rgba(232,237,243,0.4)" }}>{profile.title}</p>
                 </motion.div>
 
-                {/* Photo + bio grid */}
+                {/* Photo + details grid */}
                 <div className="grid md:grid-cols-[280px_1fr] gap-12 items-start">
 
                     {/* Photo */}
@@ -221,23 +192,27 @@ export default function ProfilePage({ params }: { params: { slug: string } }) {
                             overflow: "hidden", position: "relative",
                         }}>
                             {profile.photo ? (
-                                <img src={profile.photo} alt={profile.name} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+                                <img src={profile.photo} alt={profile.name}
+                                     style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
                             ) : (
                                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
                                     <svg width="48" height="48" viewBox="0 0 36 36" fill="none" style={{ color: `${CYAN}40` }}>
                                         <circle cx="18" cy="13" r="6" stroke="currentColor" strokeWidth="1.5" />
                                         <path d="M4 32c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                     </svg>
-                                    <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: `${CYAN}50` }}>Add Photo</span>
+                                    <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: `${CYAN}50` }}>
+                    Add Photo
+                  </span>
                                 </div>
                             )}
-                            <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(90deg, ${BLUE}, ${CYAN})` }} />
+                            <div className="absolute top-0 left-0 right-0 h-0.5"
+                                 style={{ background: `linear-gradient(90deg, ${BLUE}, ${CYAN})` }} />
                         </div>
                     </motion.div>
 
                     {/* Details */}
-                    <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-                                className="space-y-10">
+                    <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.6, delay: 0.1 }} className="space-y-10">
 
                         {/* Bio */}
                         <div>
@@ -246,25 +221,12 @@ export default function ProfilePage({ params }: { params: { slug: string } }) {
                             </p>
                         </div>
 
-                        {/* Expertise */}
-                        {profile.expertise && profile.expertise.length > 0 && (
-                            <div>
-                                <h3 className="text-xs font-bold tracking-[0.2em] uppercase mb-4" style={{ color: CYAN }}>Areas of Expertise</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {profile.expertise.map((item, i) => (
-                                        <span key={i} className="px-3 py-1.5 text-xs font-medium"
-                                              style={{ background: "rgba(26,122,191,0.08)", border: "1px solid rgba(26,122,191,0.2)", borderRadius: 8, color: "rgba(232,237,243,0.6)" }}>
-                      {item}
-                    </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
                         {/* Education */}
-                        {profile.education && profile.education.length > 0 && (
+                        {profile.education.length > 0 && (
                             <div>
-                                <h3 className="text-xs font-bold tracking-[0.2em] uppercase mb-4" style={{ color: CYAN }}>Education</h3>
+                                <h3 className="text-xs font-bold tracking-[0.2em] uppercase mb-4" style={{ color: CYAN }}>
+                                    Education
+                                </h3>
                                 <div className="space-y-4">
                                     {profile.education.map((edu, i) => (
                                         <div key={i} className="pl-4" style={{ borderLeft: `2px solid rgba(26,122,191,0.3)` }}>
@@ -275,26 +237,12 @@ export default function ProfilePage({ params }: { params: { slug: string } }) {
                                 </div>
                             </div>
                         )}
-
-                        {/* Affiliations */}
-                        {profile.affiliations && profile.affiliations.length > 0 && (
-                            <div>
-                                <h3 className="text-xs font-bold tracking-[0.2em] uppercase mb-4" style={{ color: CYAN }}>Affiliations</h3>
-                                <ul className="space-y-2">
-                                    {profile.affiliations.map((aff, i) => (
-                                        <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "rgba(232,237,243,0.5)" }}>
-                                            <span style={{ color: CYAN, flexShrink: 0 }}>→</span>{aff}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
                     </motion.div>
                 </div>
             </section>
 
             {/* FOOTER */}
-            <footer className="relative z-10 px-8 md:px-16 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+            <footer className="relative z-10 px-8 md:px-16 py-8 flex items-center justify-between"
                     style={{ borderTop: "1px solid rgba(26,122,191,0.15)" }}>
                 <div className="flex items-center gap-3">
                     <img src="/sphereny-logo-light.png" alt="SphereNY" style={{ height: "32px", width: "auto" }} />

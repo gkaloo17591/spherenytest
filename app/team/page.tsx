@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const CYAN = "#00c3e3";
 const BLUE = "#1a7abf";
@@ -18,129 +19,111 @@ const SECTIONS = [
     {
         label: "Leadership",
         members: [
-            { name: "John", title: "President", photo: null },
-            { name: "Sean", title: "Chief Information Officer", photo: null },
-            { name: "Donna", title: "Controller", photo: null },
+            { slug: "john", name: "John", title: "President", photo: null },
+            { slug: "sean", name: "Sean", title: "Chief Information Officer", photo: null },
+            { slug: "donna", name: "Donna", title: "Controller", photo: null },
         ],
     },
     {
         label: "App Dev & Support",
         members: [
-            { name: "Rama", title: "VP of App Dev & Support", photo: null },
-            { name: "Linda", title: "Senior App Dev Support", photo: null },
-            { name: "June", title: "Help Desk Specialist 2", photo: null },
-            { name: "Kate", title: "Help Desk Specialist", photo: null },
-            { name: "Gabriel", title: "Help Desk Specialist", photo: null },
+            { slug: "rama", name: "Rama", title: "VP of App Dev & Support", photo: null },
+            { slug: "linda", name: "Linda", title: "Senior App Dev Support", photo: null },
+            { slug: "june", name: "June", title: "Help Desk Specialist 2", photo: null },
+            { slug: "kate", name: "Kate", title: "Help Desk Specialist", photo: null },
+            { slug: "gabriel", name: "Gabriel", title: "Help Desk Specialist", photo: null },
         ],
     },
     {
         label: "Infrastructure & Cybersecurity",
         members: [
-            { name: "Danny", title: "VP of Infrastructure & Cybersecurity", photo: null },
-            { name: "Johnny", title: "System Administrator", photo: null },
+            { slug: "danny", name: "Danny", title: "VP of Infrastructure & Cybersecurity", photo: null },
+            { slug: "johnny", name: "Johnny", title: "System Administrator", photo: null },
         ],
     },
     {
         label: "Risk Management",
         members: [
-            { name: "Shane", title: "VP of Claims & Risk", photo: null },
-            { name: "Marissa", title: "Claims Associate", photo: null },
+            { slug: "shane", name: "Shane", title: "VP of Claims & Risk", photo: null },
+            { slug: "marissa", name: "Marissa", title: "Claims Associate", photo: null },
         ],
     },
 ];
 
-function MemberCard({ name, title, photo }: { name: string; title: string; photo: string | null }) {
+function MemberCard({ slug, name, title, photo }: { slug: string; name: string; title: string; photo: string | null }) {
     const [hovered, setHovered] = useState(false);
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-col cursor-pointer"
-            style={{ width: 200 }}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-        >
-            {/* Photo box */}
-            <div
-                className="relative overflow-hidden mb-4"
-                style={{
-                    width: 200,
-                    height: 240,
-                    borderRadius: 16,
-                    background: hovered
-                        ? "rgba(26,122,191,0.15)"
-                        : "rgba(26,122,191,0.07)",
-                    border: hovered
-                        ? `1px solid rgba(0,195,227,0.5)`
-                        : "1px solid rgba(26,122,191,0.2)",
-                    transition: "all 0.3s ease",
-                    boxShadow: hovered
-                        ? `0 0 30px rgba(26,122,191,0.25), 0 8px 32px rgba(0,0,0,0.3)`
-                        : "0 4px 16px rgba(0,0,0,0.2)",
-                    transform: hovered ? "translateY(-4px)" : "translateY(0)",
-                }}
+        <Link href={`/team/${slug}`} style={{ textDecoration: "none" }}>
+            <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                className="flex flex-col cursor-pointer"
+                style={{ width: 200 }}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
             >
-                {photo ? (
-                    <img src={photo} alt={name} className="w-full h-full object-cover object-top"
-                         style={{ transform: hovered ? "scale(1.04)" : "scale(1)", transition: "transform 0.4s ease" }} />
-                ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-                        {/* Animated rings on hover */}
-                        {hovered && (
-                            <motion.div
-                                initial={{ scale: 0.8, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                            >
-                                <div style={{ width: 80, height: 80, borderRadius: "50%", border: `1px solid rgba(0,195,227,0.2)`, position: "absolute" }} />
-                                <div style={{ width: 100, height: 100, borderRadius: "50%", border: `1px solid rgba(0,195,227,0.1)`, position: "absolute" }} />
-                            </motion.div>
-                        )}
-                        <div style={{
-                            width: 56, height: 56, borderRadius: "50%",
-                            background: hovered ? `rgba(26,122,191,0.2)` : "rgba(26,122,191,0.1)",
-                            border: hovered ? `1px solid rgba(0,195,227,0.4)` : "1px solid rgba(26,122,191,0.2)",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            transition: "all 0.3s ease",
-                            boxShadow: hovered ? `0 0 16px rgba(0,195,227,0.2)` : "none",
-                        }}>
-                            <svg width="24" height="24" viewBox="0 0 36 36" fill="none" style={{ color: hovered ? CYAN : `${CYAN}60`, transition: "color 0.3s" }}>
-                                <circle cx="18" cy="13" r="6" stroke="currentColor" strokeWidth="1.5" />
-                                <path d="M4 32c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
+                {/* Photo box */}
+                <div
+                    className="relative overflow-hidden mb-4"
+                    style={{
+                        width: 200, height: 240, borderRadius: 16,
+                        background: hovered ? "rgba(26,122,191,0.15)" : "rgba(26,122,191,0.07)",
+                        border: hovered ? `1px solid rgba(0,195,227,0.5)` : "1px solid rgba(26,122,191,0.2)",
+                        transition: "all 0.3s ease",
+                        boxShadow: hovered ? `0 0 30px rgba(26,122,191,0.25), 0 8px 32px rgba(0,0,0,0.3)` : "0 4px 16px rgba(0,0,0,0.2)",
+                        transform: hovered ? "translateY(-4px)" : "translateY(0)",
+                    }}
+                >
+                    {photo ? (
+                        <img src={photo} alt={name} className="w-full h-full object-cover object-top"
+                             style={{ transform: hovered ? "scale(1.04)" : "scale(1)", transition: "transform 0.4s ease" }} />
+                    ) : (
+                        <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, position: "relative" }}>
+                            <div style={{ position: "absolute", width: 80, height: 80, borderRadius: "50%", border: `1px solid rgba(0,195,227,${hovered ? 0.2 : 0})`, transition: "all 0.3s", top: "50%", left: "50%", transform: "translate(-50%, -60%)" }} />
+                            <div style={{ position: "absolute", width: 104, height: 104, borderRadius: "50%", border: `1px solid rgba(0,195,227,${hovered ? 0.1 : 0})`, transition: "all 0.3s", top: "50%", left: "50%", transform: "translate(-50%, -60%)" }} />
+                            <div style={{ width: 56, height: 56, borderRadius: "50%", background: hovered ? "rgba(26,122,191,0.2)" : "rgba(26,122,191,0.1)", border: hovered ? `1px solid rgba(0,195,227,0.4)` : "1px solid rgba(26,122,191,0.2)", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s", boxShadow: hovered ? `0 0 16px rgba(0,195,227,0.2)` : "none", position: "relative", zIndex: 1 }}>
+                                <svg width="24" height="24" viewBox="0 0 36 36" fill="none" style={{ color: hovered ? CYAN : `${CYAN}60`, transition: "color 0.3s" }}>
+                                    <circle cx="18" cy="13" r="6" stroke="currentColor" strokeWidth="1.5" />
+                                    <path d="M4 32c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                </svg>
+                            </div>
+                            <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: hovered ? CYAN : `${CYAN}50`, transition: "color 0.3s", position: "relative", zIndex: 1 }}>
+                Add Photo
+              </span>
                         </div>
-                        <span style={{
-                            fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase",
-                            color: hovered ? CYAN : `${CYAN}50`,
-                            transition: "color 0.3s",
-                        }}>
-              Add Photo
+                    )}
+
+                    {/* Top accent line */}
+                    <div className="absolute top-0 left-0 right-0 h-0.5 transition-opacity duration-300"
+                         style={{ background: `linear-gradient(90deg, ${BLUE}, ${CYAN})`, opacity: hovered ? 1 : 0 }} />
+
+                    {/* Bottom glow */}
+                    <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none transition-opacity duration-300"
+                         style={{ background: `linear-gradient(to top, rgba(26,122,191,0.15), transparent)`, opacity: hovered ? 1 : 0 }} />
+
+                    {/* View Profile label */}
+                    <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center pb-4 transition-opacity duration-300"
+                         style={{ opacity: hovered ? 1 : 0 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: CYAN }}>
+              View Profile →
             </span>
                     </div>
-                )}
-
-                {/* Top accent line */}
-                <div className="absolute top-0 left-0 right-0 h-0.5 transition-opacity duration-300"
-                     style={{ background: `linear-gradient(90deg, ${BLUE}, ${CYAN})`, opacity: hovered ? 1 : 0 }} />
-
-                {/* Bottom glow */}
-                <div className="absolute bottom-0 left-0 right-0 h-16 transition-opacity duration-300 pointer-events-none"
-                     style={{ background: `linear-gradient(to top, rgba(26,122,191,0.15), transparent)`, opacity: hovered ? 1 : 0 }} />
-            </div>
-
-            {/* Name + title */}
-            <div style={{ transition: "transform 0.3s ease", transform: hovered ? "translateY(-2px)" : "translateY(0)" }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: hovered ? "#f0f4f8" : "#e8edf3", marginBottom: 4, letterSpacing: "-0.01em", transition: "color 0.3s" }}>
-                    {name}
                 </div>
-                <div style={{ fontSize: 12, color: hovered ? "rgba(232,237,243,0.65)" : "rgba(232,237,243,0.4)", lineHeight: 1.5, transition: "color 0.3s" }}>
-                    {title}
+
+                {/* Name + title */}
+                <div style={{ transition: "transform 0.3s ease", transform: hovered ? "translateY(-2px)" : "translateY(0)" }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: hovered ? "#f0f4f8" : "#e8edf3", marginBottom: 4, letterSpacing: "-0.01em", transition: "color 0.3s" }}>
+                        {name}
+                    </div>
+                    <div style={{ fontSize: 12, color: hovered ? "rgba(232,237,243,0.65)" : "rgba(232,237,243,0.4)", lineHeight: 1.5, transition: "color 0.3s" }}>
+                        {title}
+                    </div>
                 </div>
-            </div>
-        </motion.div>
+            </motion.div>
+        </Link>
     );
 }
 
@@ -213,7 +196,7 @@ export default function Team() {
                         Meet the <span style={{ color: "rgba(232,237,243,0.2)" }}>Team</span>
                     </h1>
                     <p className="text-sm leading-relaxed max-w-lg" style={{ color: "rgba(232,237,243,0.4)" }}>
-                        The seasoned professionals behind SphereNY — spanning Leadership, App Dev & Support, Infrastructure, and Risk Management.
+                        The seasoned professionals behind SphereNY. Click any profile to learn more.
                     </p>
                 </motion.div>
             </section>

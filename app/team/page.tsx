@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -65,7 +65,6 @@ function MemberCard({ slug, name, title, photo }: { slug: string; name: string; 
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
             >
-                {/* Photo box */}
                 <div
                     className="relative overflow-hidden mb-4"
                     style={{
@@ -95,16 +94,10 @@ function MemberCard({ slug, name, title, photo }: { slug: string; name: string; 
               </span>
                         </div>
                     )}
-
-                    {/* Top accent line */}
                     <div className="absolute top-0 left-0 right-0 h-0.5 transition-opacity duration-300"
                          style={{ background: `linear-gradient(90deg, ${BLUE}, ${CYAN})`, opacity: hovered ? 1 : 0 }} />
-
-                    {/* Bottom glow */}
                     <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none transition-opacity duration-300"
                          style={{ background: `linear-gradient(to top, rgba(26,122,191,0.15), transparent)`, opacity: hovered ? 1 : 0 }} />
-
-                    {/* View Profile label */}
                     <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center pb-4 transition-opacity duration-300"
                          style={{ opacity: hovered ? 1 : 0 }}>
             <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: CYAN }}>
@@ -113,7 +106,6 @@ function MemberCard({ slug, name, title, photo }: { slug: string; name: string; 
                     </div>
                 </div>
 
-                {/* Name + title */}
                 <div style={{ transition: "transform 0.3s ease", transform: hovered ? "translateY(-2px)" : "translateY(0)" }}>
                     <div style={{ fontSize: 15, fontWeight: 700, color: hovered ? "#f0f4f8" : "#e8edf3", marginBottom: 4, letterSpacing: "-0.01em", transition: "color 0.3s" }}>
                         {name}
@@ -129,6 +121,16 @@ function MemberCard({ slug, name, title, photo }: { slug: string; name: string; 
 
 export default function Team() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [navHovered, setNavHovered] = useState(false);
+
+    useEffect(() => {
+        const handler = () => setScrolled(window.scrollY > 60);
+        window.addEventListener("scroll", handler);
+        return () => window.removeEventListener("scroll", handler);
+    }, []);
+
+    const navCompact = scrolled && !navHovered;
 
     return (
         <main className="min-h-screen text-[#e8edf3] overflow-x-hidden" style={{ background: "#060d1a", fontFamily: "'Inter', sans-serif" }}>
@@ -139,25 +141,68 @@ export default function Team() {
                 <div style={{ position: "absolute", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,195,227,0.1) 0%, transparent 70%)", bottom: -150, left: -150, filter: "blur(70px)" }} />
             </div>
 
-            {/* NAV */}
-            <nav className="fixed top-4 z-50 flex items-center justify-between px-7 py-3"
-                 style={{ left: "50%", transform: "translateX(-50%)", width: "calc(100% - 80px)", maxWidth: 1100, background: "rgba(6,13,26,0.75)", backdropFilter: "blur(20px)", border: "1px solid rgba(26,122,191,0.2)", borderRadius: 16 }}>
+            {/* ── NAV ── */}
+            <nav
+                className="fixed top-4 z-50 flex items-center justify-between transition-all duration-300"
+                style={{
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: navCompact ? "320px" : "calc(100% - 80px)",
+                    maxWidth: 1100,
+                    background: "rgba(6,13,26,0.85)",
+                    backdropFilter: "blur(20px)",
+                    border: "1px solid rgba(26,122,191,0.2)",
+                    borderRadius: 16,
+                    padding: navCompact ? "8px 20px" : "12px 28px",
+                }}
+                onMouseEnter={() => setNavHovered(true)}
+                onMouseLeave={() => setNavHovered(false)}
+            >
                 <a href="/" className="flex items-center shrink-0">
-                    <img src="/sphereny-logo-light.png" alt="SphereNY" style={{ height: "48px", width: "auto" }} />
+                    <img
+                        src="/sphereny-logo-light.png"
+                        alt="SphereNY"
+                        style={{
+                            height: navCompact ? "32px" : "48px",
+                            width: "auto",
+                            transition: "height 0.3s ease",
+                        }}
+                    />
                 </a>
-                <div className="hidden md:flex items-center gap-1">
+
+                {/* Desktop links — hidden when compact */}
+                <div
+                    className="hidden md:flex items-center gap-1 transition-all duration-300"
+                    style={{ opacity: navCompact ? 0 : 1, pointerEvents: navCompact ? "none" : "auto", width: navCompact ? 0 : "auto", overflow: "hidden" }}
+                >
                     {NAV_LINKS.map(l => (
-                        <a key={l.href} href={l.href} className="px-4 py-2 text-sm rounded-lg transition-all"
+                        <a key={l.href} href={l.href} className="px-4 py-2 text-sm rounded-lg transition-all whitespace-nowrap"
                            style={{ color: l.href === "/team" ? CYAN : "rgba(232,237,243,0.45)", textDecoration: "none" }}
                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#e8edf3"; (e.currentTarget as HTMLElement).style.background = "rgba(26,122,191,0.08)"; }}
                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = l.href === "/team" ? CYAN : "rgba(232,237,243,0.45)"; (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                         >{l.label}</a>
                     ))}
                 </div>
-                <a href="tel:2128352311" className="hidden md:inline-flex px-5 py-2.5 text-sm font-bold text-white shrink-0"
-                   style={{ background: `linear-gradient(135deg,${BLUE},${BLUE_DARK})`, boxShadow: `0 0 16px rgba(26,122,191,0.35)`, borderRadius: 12 }}>
-                    212-835-2311
-                </a>
+
+                {/* Phone button — hidden when compact */}
+                <div
+                    className="transition-all duration-300"
+                    style={{ opacity: navCompact ? 0 : 1, pointerEvents: navCompact ? "none" : "auto", width: navCompact ? 0 : "auto", overflow: "hidden" }}
+                >
+                    <a href="tel:2128352311" className="hidden md:inline-flex px-5 py-2.5 text-sm font-bold text-white whitespace-nowrap"
+                       style={{ background: `linear-gradient(135deg,${BLUE},${BLUE_DARK})`, boxShadow: `0 0 16px rgba(26,122,191,0.35)`, borderRadius: 12 }}>
+                        212-835-2311
+                    </a>
+                </div>
+
+                {/* Compact mode hint */}
+                {navCompact && (
+                    <p className="text-xs hidden md:block" style={{ color: "rgba(232,237,243,0.3)", whiteSpace: "nowrap" }}>
+                        Hover to expand
+                    </p>
+                )}
+
+                {/* Mobile toggle */}
                 <button className="md:hidden" style={{ color: "rgba(232,237,243,0.6)" }} onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
                         {menuOpen
